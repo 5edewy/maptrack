@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, Platform, StatusBar, Text, TouchableOpacity, TouchableWithoutFeedback, View, } from 'react-native';
 import { CardStyleInterpolators, createStackNavigator, HeaderTitle, HeaderStyleInterpolators } from '@react-navigation/stack';
 import Home from './components/screens/Home';
+import PaymentCard from './components/screens/PaymentCard';
 
 
 
@@ -15,7 +16,7 @@ export default function RouterNavigator() {
 
         <Stack.Navigator
 
-            initialRouteName="Home"
+            initialRouteName="PaymentCard"
 
 
         >
@@ -24,7 +25,11 @@ export default function RouterNavigator() {
                 component={Home}
                 options={{ headerShown: false }}
             />
-
+            <Stack.Screen
+                name="PaymentCard"
+                component={PaymentCard}
+                options={{ headerShown: false }}
+            />
 
         </Stack.Navigator>
     );
