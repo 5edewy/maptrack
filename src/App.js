@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import RouterNavigator from './RouterNavigator';
 import { StripeProvider } from '@stripe/stripe-react-native';
+import { publishableKey } from './components/Common/HelperFunctions'
 
-const publishableKey = "pk_test_A4NpuY8IglXSz4BGF0xQIkXE";
 
 class App extends Component {
     constructor(props) {
@@ -23,6 +23,7 @@ class App extends Component {
                 <NavigationContainer
 
                 >
+                    <StatusBar hidden />
                     <RouterNavigator />
                 </NavigationContainer>
             </StripeProvider>

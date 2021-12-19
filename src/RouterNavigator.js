@@ -15,10 +15,7 @@ export default function RouterNavigator() {
     return (
 
         <Stack.Navigator
-
-            initialRouteName="PaymentCard"
-
-
+            initialRouteName="Home"
         >
             <Stack.Screen
                 name="Home"

@@ -1,69 +1,98 @@
-import React, { Component } from 'react';
-import { View, Text, Button } from 'react-native';
+import React from 'react';
+import { View, Text, Button, Alert } from 'react-native';
 import { CardField, useConfirmPayment, } from '@stripe/stripe-react-native';
+import styles from '../Assets/style/styles';
 
 
-export default function PaymentCard() {
-    const clientsecret = "sk_test_z4N8mZoFvnpQY1tZgxSCQGl1";
+export default function PaymentCard(props) {
+
+    const { replace } = props.navigation
     const { confirmPayment, loading } = useConfirmPayment()
 
+    const showAlertI = (text) => {
+        Alert.alert(
+            'Done Your Payment',
+            `${text}`,
+            [
 
-    const _hanlePayment = async () => {
-        const { error, paymentIntent } = await confirmPayment(clientsecret, {
-            type: 'Card',
-            // token: 'tok_us',
-            // paymentMethodId: 'pm_card_us',
-            // billingDetails: {
-            //     name: 'Mohamed Khaled',
-
-            // },
-            // setupFutureUsage: 'OnSession'
-            // name: 'jenny Rosen',
+                {
+                    text: 'OK', onPress: () => replace("Home", {
+                        flag: "flag"
+                    })
+                },
+            ]
+        );
+    }
+    // THIS Function Fetch LOCALHOST TO GET THE CLIENT_SECRET
+    const _hanlePayment_withexpress = async () => {
+        const response = await fetch(`http://10.0.2.2:3000/create-payment-intent`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                paymentMethodType: 'card',
+                currency: 'usd'
+            })
+        }).catch(error => {
 
         })
 
+        const { clientsecret } = await response.json()
+
+
+        const { error, paymentIntent } = await confirmPayment(clientsecret, {
+            type: 'Card',
+            billingDetails: {
+                name: 'Mohamed Khaled'
+            }
+        })
         if (error) {
-            console.log("err", error);
             alert(error.message)
+            // showAlertI(error.message)
         } else if (paymentIntent) {
-            console.log("ss", paymentIntent);
-            alert("success", paymentIntent.id)
+
+            showAlertI(paymentIntent.id)
+        }
+    }
+
+    const _hanlePayment = async () => {
+        const { error, paymentIntent } = await
+            confirmPayment("pi_3K882TKbht1ZQ9KD0ERQtvZs_secret_CK17wx2udrLZHtLzRLq5oZeTj", {
+                type: 'Card',
+            })
+
+        if (error) {
+            showAlertI(error.message)
+            // navigate("Home", {
+            //     startTrack: true
+            // })
+        } else if (paymentIntent) {
+            showAlertI(paymentIntent.id)
+            // navigate("Home", {
+            //     startTrack: true
+            // })
         }
     }
 
     return (
-        <View style={{
-            flex: 1,
-            paddingHorizontal: 10
-        }}>
-            <Text> PaymentCard </Text>
+        <View style={styles.paymentContainer}>
+            <Text style={styles.labelText} >{"PLEASE , CHECK YOUR PAYMENT !"}</Text>
+            <Text style={styles.labelsubText} >{"Enter Your Card Number Here"}</Text>
             <CardField
-
                 postalCodeEnabled={false}
                 placeholder={{
                     number: '4242 4242 4242 4242',
                 }}
-                cardStyle={{
-                    backgroundColor: '#FFFFFF',
-                    textColor: '#000000',
-                }}
-                style={{
-                    width: '100%',
-                    height: 50,
-                    marginVertical: 30,
-                }}
-                onCardChange={(cardDetails) => {
-                    console.log('cardDetails', cardDetails);
-                }}
-                onFocus={(focusedField) => {
-                    console.log('focusField', focusedField);
-                }}
+                cardStyle={styles.cardStyle}
+                style={styles.additionalCardStyle}
+
             />
             <Button
                 disabled={loading}
                 onPress={_hanlePayment}
                 title='PAY'
-            ></Button>
+            />
         </View>
     );
 }
